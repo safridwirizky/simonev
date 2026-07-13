@@ -2,7 +2,7 @@ from flask import Blueprint
 from flask import current_app
 from flask import render_template
 
-from extensions import excel_service
+from extensions import excel
 from extensions import settings_service
 
 from services.dashboard_service import DashboardService
@@ -18,7 +18,7 @@ dashboard_bp = Blueprint(
 def index():
 
     dashboard = DashboardService(
-        excel_service,
+        excel,
         settings_service
     )
 

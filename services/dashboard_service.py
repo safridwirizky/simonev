@@ -1,53 +1,21 @@
-from services.analytics_service import AnalyticsService
+def table(self):
 
+    rows = []
 
-class DashboardService:
+    for item in self.analytics.get_sub_kegiatan():
 
-    def __init__(self, excel_service, settings_service):
+        rows.append({
 
-        self.excel = excel_service
-        self.settings = settings_service
+            **item,
 
-        self.analytics = AnalyticsService(
-            self.excel.realisasi,
-            self.excel.anggaran,
-            self.settings
-        )
+            "status":
 
-    def table(self):
-        """
-        Data untuk halaman monitoring.
-        Sementara masih dummy.
-        """
+            self.analytics.calculate_status(
 
-        return [
-            {
-                "kode": "5.01.02.2.16",
-                "bidang": "PPEPD",
-                "sub_kegiatan": "Penyusunan RKPD",
-                "status": 82.5
-            },
-            {
-                "kode": "5.01.02.2.17",
-                "bidang": "Litbang",
-                "sub_kegiatan": "Kajian Strategis",
-                "status": 63.4
-            }
-        ]
+                item["kode"]
 
-    def detail(self, kode):
-        """
-        Data dashboard sub kegiatan.
-        Sementara masih dummy.
-        """
+            )
 
-        return {
-            "identitas": {
-                "kode": kode,
-                "bidang": "",
-                "sub_kegiatan": ""
-            },
-            "kinerja": {},
-            "anggaran": {},
-            "timeline": []
-        }
+        })
+
+    return rows

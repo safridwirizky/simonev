@@ -1,10 +1,12 @@
 from pathlib import Path
 
+
 class Config:
-    SECRET_KEY = "simonev-secret-key"
 
     BASE_DIR = Path(__file__).resolve().parent
 
-    EXCEL_FILE = BASE_DIR / "data" / "database.xlsx"
+    DATA_DIR = BASE_DIR / "data"
 
-    CACHE_TIMEOUT = 300
+    EXCEL_FILE = DATA_DIR / "database.xlsx"
+
+    SETTINGS_FILE = DATA_DIR / "settings.json"
