@@ -1,0 +1,74 @@
+:root {
+    --primary: #0d6efd;
+    --sidebar-width: 260px;
+    --radius: 12px;
+}
+
+.navbar {
+    height: 72px;
+    z-index: 1030;
+}
+
+.navbar-brand {
+    font-weight: 600;
+}
+
+.navbar small {
+    font-size: .78rem;
+}
+
+.dropdown-toggle::after {
+    margin-left: .5rem;
+}
+
+#sidebarToggle {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+}
+
+/* ==========================
+   Sidebar
+========================== */
+
+.sidebar {
+    min-height: calc(100vh - 72px);
+    padding-top: 1rem;
+    background: #fff;
+}
+
+.sidebar .nav-link {
+    color: #495057;
+    font-weight: 500;
+    padding: .85rem 1.2rem;
+    margin: .2rem .8rem;
+    border-radius: 10px;
+    transition: all .25s ease;
+}
+
+.sidebar .nav-link i {
+    width: 20px;
+}
+
+.sidebar .nav-link:hover {
+    background: #e9f2ff;
+    color: #0d6efd;
+}
+
+.sidebar .nav-link.active {
+    background: #0d6efd;
+    color: white;
+}
+
+.sidebar hr {
+    margin: 1rem;
+}
+
+/* ==========================
+   Footer
+========================== */
+
+footer {
+    font-size: .85rem;
+    background: #fff;
+}

@@ -1,0 +1,32 @@
+# Virtual Environment
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Flask
+instance/
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# macOS
+.DS_Store
+
+# Logs
+logs/
+
+# Environment
+.env
+
+# Cache
+cache/
+
+# Excel produksi (opsional)
+data/~$database.xlsx

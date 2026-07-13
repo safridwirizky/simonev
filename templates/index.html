@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="mb-4">
+
+        <h2 class="fw-bold">
+            Dashboard
+        </h2>
+
+        <p class="text-muted">
+            Monitoring dan Evaluasi Kinerja Sub Kegiatan
+        </p>
+
+    </div>
+
+    <div class="row mt-4">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-header bg-white">
+
+                    Serapan Anggaran
+
+                </div>
+
+                <div class="card-body">
+
+                    <div id="serapanChart"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-4">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-header bg-white">
+
+                    Realisasi Fisik
+
+                </div>
+
+                <div class="card-body">
+
+                    <div id="fisikChart"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+
+const options = {
+
+    chart: {
+        type: 'bar',
+        height: 350,
+        toolbar: {
+            show: false
+        }
+    },
+
+    series: [{
+        name: 'Serapan',
+        data: [65, 72, 80, 76, 88]
+    }],
+
+    xaxis: {
+        categories: [
+            'Bidang A',
+            'Bidang B',
+            'Bidang C',
+            'Bidang D',
+            'Bidang E'
+        ]
+    }
+
+};
+
+const chart = new ApexCharts(
+    document.querySelector("#serapanChart"),
+    options
+);
+
+chart.render();
+
+</script>
+
+{% endblock %}

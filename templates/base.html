@@ -1,0 +1,53 @@
+{% from 'bootstrap5/nav.html' import render_nav_item %}
+{% from 'bootstrap5/utils.html' import render_messages %}
+
+<!doctype html>
+<html lang="id">
+
+<head>
+    {% block head %}
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>
+            {% block title %}SIMONEV{% endblock %}
+        </title>
+
+        {{ bootstrap.load_css() }}
+
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='css/style.css') }}">
+
+        {% block styles %}{% endblock %}
+    {% endblock %}
+</head>
+
+<body>
+
+    {% include 'components/navbar.html' %}
+
+    <div class="container-fluid">
+        <div class="row">
+
+            {% include 'components/sidebar.html' %}
+
+            <main class="col py-4">
+
+                {{ render_messages() }}
+
+                {% block content %}{% endblock %}
+
+            </main>
+
+        </div>
+    </div>
+
+    {% include 'components/footer.html' %}
+
+    {{ bootstrap.load_js() }}
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>
