@@ -1,21 +1,36 @@
-def table(self):
+from services.analytics_service import AnalyticsService
 
-    rows = []
 
-    for item in self.analytics.get_sub_kegiatan():
+class DashboardService:
 
-        rows.append({
+    def __init__(self, excel_service, settings_service):
 
-            **item,
+        self.excel = excel_service
+        self.settings = settings_service
 
-            "status":
+    @property
+    def analytics(self):
 
-            self.analytics.calculate_status(
+        return AnalyticsService(
+            self.excel.realisasi,
+            self.excel.anggaran,
+            self.settings
+        )
 
-                item["kode"]
+    def table(self):
 
-            )
+        rows = []
 
-        })
+        for item in self.analytics.get_sub_kegiatan():
 
-    return rows
+            rows.append({
+
+                **item,
+
+                "status": self.analytics.calculate_status(
+                    item["kode"]
+                )
+
+            })
+
+        return rows

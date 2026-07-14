@@ -7,4 +7,4 @@ settings_service = SettingsService(
     Config.SETTINGS_FILE
 )
 
-excel = ExcelService()
+excel_service = ExcelService()

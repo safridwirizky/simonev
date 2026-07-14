@@ -4,6 +4,10 @@
     --radius: 12px;
 }
 
+/* ==========================
+   Navbar
+========================== */
+
 .navbar {
     height: 72px;
     z-index: 1030;
@@ -21,15 +25,15 @@
     margin-left: .5rem;
 }
 
+/* ==========================
+   Sidebar
+========================== */
+
 #sidebarToggle {
     width: 42px;
     height: 42px;
     border-radius: 10px;
 }
-
-/* ==========================
-   Sidebar
-========================== */
 
 .sidebar {
     min-height: calc(100vh - 72px);
@@ -71,4 +75,38 @@
 footer {
     font-size: .85rem;
     background: #fff;
+}
+
+/* =============================================================================
+   DASHBOARD
+============================================================================= */
+
+.clickable-row{
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.clickable-row:hover{
+
+    background:#f8f9fa;
+
+}
+
+.progress{
+
+    height:8px;
+
+    border-radius:999px;
+
+}
+
+.progress-bar{
+
+    width:0;
+
+    transition:width .6s ease;
+
 }

@@ -6,7 +6,7 @@ from config import Config
 from routes.dashboard import dashboard_bp
 from routes.api import api_bp
 
-from extensions import excel
+from extensions import excel_service
 from extensions import settings_service
 
 from services.dashboard_service import DashboardService
@@ -22,7 +22,7 @@ def create_app():
 
     bootstrap.init_app(app)
 
-    excel.load(app.config["EXCEL_FILE"])
+    excel_service.load(app.config["EXCEL_FILE"])
 
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(api_bp, url_prefix="/api")
@@ -32,11 +32,11 @@ def create_app():
 
 app = create_app()
 
-print(excel.realisasi.head())
+print(excel_service.realisasi.head())
 
 print()
 
-print(excel.anggaran.head())
+print(excel_service.anggaran.head())
 
 '''
 @dashboard_bp.route("/")

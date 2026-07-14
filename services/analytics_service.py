@@ -1,6 +1,6 @@
 class AnalyticsService:
 
-    TRIWULAN = {
+    TRIWULAN_MAP = {
         1: [1],
         2: [1, 2],
         3: [1, 2, 3],
@@ -20,36 +20,8 @@ class AnalyticsService:
         self.settings = settings
     
     # ==============================================================================
-    # PRIVATE
+    # PRIVATE : DATA
     # ==============================================================================
-    
-    def _build_status(self, persentase):
-
-        if persentase >= 80:
-            return {
-                "persentase": persentase,
-                "kategori": "success",
-                "label": "Baik",
-                "icon": "bi-check-circle-fill",
-                "color": "bg-success"
-            }
-
-        elif persentase >= 60:
-            return {
-                "persentase": persentase,
-                "kategori": "warning",
-                "label": "Perlu Perhatian",
-                "icon": "bi-exclamation-triangle-fill",
-                "color": "bg-warning"
-            }
-
-        return {
-            "persentase": persentase,
-            "kategori": "danger",
-            "label": "Kritis",
-            "icon": "bi-x-circle-fill",
-            "color": "bg-danger"
-        }
     
     def _row(self, df, kode):
 
@@ -65,15 +37,21 @@ class AnalyticsService:
     def _period_columns(self, prefix):
 
         return [
-
             f"{prefix}_tw{i}"
-
-            for i in self.TRIWULAN[
-                self.settings.triwulan
-            ]
-
+            for i in self.TRIWULAN_MAP[self.settings.triwulan]
         ]
     
+    # ==============================================================================
+    # PRIVATE : FORMATTER
+    # ==============================================================================
+
+    @staticmethod
+    def _currency(value):
+
+        value = float(value)
+
+        return f"Rp {value:,.0f}".replace(",", ".")
+
     @staticmethod
     def _safe_divide(numerator, denominator):
 
@@ -84,6 +62,48 @@ class AnalyticsService:
             numerator / denominator * 100,
             2
         ))
+    
+    def _build_status(
+        self,
+        value: float,
+        target: float,
+        realisasi: float
+    ):
+
+        if value >= 80:
+            label = "Baik"
+            color = "bg-success"
+            icon = "bi-check-circle-fill"
+
+        elif value >= 60:
+            label = "Perlu Perhatian"
+            color = "bg-warning"
+            icon = "bi-exclamation-triangle-fill"
+
+        else:
+            label = "Kritis"
+            color = "bg-danger"
+            icon = "bi-x-circle-fill"
+
+        return {
+            "value": value,                       # untuk width progress bar
+            "display": f"{round(value):.0f}%",    # tampil di tabel
+            "exact": f"{value:.2f}%",             # tooltip / detail
+
+            "target": {
+                "value": target,
+                "display": self._currency(target)
+            },
+
+            "realisasi": {
+                "value": realisasi,
+                "display": self._currency(realisasi)
+            },
+
+            "label": label,
+            "color": color,
+            "icon": icon,
+        }
 
     # ==============================================================================
     # PUBLIC
@@ -94,29 +114,24 @@ class AnalyticsService:
         return (
 
             self.realisasi[
-
                 [
-
                     "kode",
 
                     "bidang",
 
                     "sub_kegiatan"
-
                 ]
-
             ]
 
             .sort_values(
-
-                "bidang"
-
+                by=[
+                    "bidang",
+                    "sub_kegiatan"
+                ]
             )
 
             .to_dict(
-
                 orient="records"
-
             )
 
         )
@@ -135,19 +150,13 @@ class AnalyticsService:
 
             return None
 
-        return {
-
-            "kode": row["kode"],
-
-            "bidang": row["bidang"],
-
-            "sub_kegiatan": row["sub_kegiatan"],
-
-            "target_kinerja": row["target_kinerja"],
-
-            "satuan": row["satuan"]
-
-        }
+        return dict(
+            kode=row["kode"],
+            bidang=row["bidang"],
+            sub_kegiatan=row["sub_kegiatan"],
+            target_kinerja=row["target_kinerja"],
+            satuan=row["satuan"]
+        )
 
     def calculate_status(self, kode):
 
@@ -162,7 +171,11 @@ class AnalyticsService:
         )
 
         if realisasi is None or target is None:
-            return self._build_status(0)
+            return self._build_status(
+                value=0,
+                target=0,
+                realisasi=0
+            )
 
         realisasi_columns = self._period_columns(
             "realisasi"
@@ -174,15 +187,19 @@ class AnalyticsService:
 
         total_realisasi = realisasi[
             realisasi_columns
-        ].sum(skipna=True)
+        ].sum()
 
         total_target = target[
             target_columns
         ].sum()
 
-        persen = self._safe_divide(
+        persentase = self._safe_divide(
             total_realisasi,
             total_target
         )
 
-        return self._build_status(persen)
+        return self._build_status(
+            value=persentase,
+            target=total_target,
+            realisasi=total_realisasi
+        )
