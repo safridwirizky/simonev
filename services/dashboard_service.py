@@ -17,19 +17,25 @@ class DashboardService:
             self.settings
         )
 
+    def detail(self, kode):
+
+        return self.analytics.get_detail(kode)
+
     def table(self):
 
         rows = []
 
         for item in self.analytics.get_sub_kegiatan():
 
+            anggaran = self.analytics.get_anggaran(
+                item["kode"]
+            )
+
             rows.append({
 
                 **item,
 
-                "status": self.analytics.calculate_status(
-                    item["kode"]
-                )
+                "status": anggaran["status"]
 
             })
 

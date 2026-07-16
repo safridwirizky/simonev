@@ -1,50 +1,20 @@
-fetch("/api/settings", {
-
-    method:"POST",
-
-    headers:{
-        "Content-Type":"application/json"
-    },
-
-    body:JSON.stringify({
-
-        tahun:2026,
-
-        triwulan:3
-
-    })
-
-})
-
 document.addEventListener("DOMContentLoaded", () => {
 
-    if (document.querySelector(".progress-bar")) {
-        animateProgressBars();
-    }
+    enableClickableRows();
 
-    if (document.querySelector(".clickable-row")) {
-        enableClickableRows();
-    }
-
-    if (document.querySelector("#searchInput")) {
-        enableSearch();
-    }
+    enableSearch();
 
 });
 
-function animateProgressBars() {
+function enableClickableRows() {
 
     document
-        .querySelectorAll(".progress-bar")
-        .forEach(bar => {
+        .querySelectorAll(".clickable-row")
+        .forEach(row => {
 
-            const progress = bar.dataset.progress;
+            row.addEventListener("click", () => {
 
-            bar.style.width = "0%";
-
-            requestAnimationFrame(() => {
-
-                bar.style.width = progress + "%";
+                window.location = row.dataset.href;
 
             });
 
@@ -52,20 +22,23 @@ function animateProgressBars() {
 
 }
 
-function enableClickableRows() {
-
-    // TODO
-}
-
 function enableSearch() {
 
-    const input = document.getElementById("searchInput");
+    const input = document.getElementById(
+        "searchInput"
+    );
 
-    const rows = document.querySelectorAll(".clickable-row");
+    if (!input) {
+        return;
+    }
 
-    const tableBody = document.getElementById("tableBody");
+    const rows = document.querySelectorAll(
+        ".clickable-row"
+    );
 
-    const emptyState = document.getElementById("emptyState");
+    const emptyState = document.getElementById(
+        "emptyState"
+    );
 
     input.addEventListener("keyup", () => {
 
@@ -77,11 +50,13 @@ function enableSearch() {
 
         rows.forEach(row => {
 
-            const text = row.textContent.toLowerCase();
+            const show = row.textContent
+                .toLowerCase()
+                .includes(keyword);
 
-            const show = text.includes(keyword);
-
-            row.style.display = show ? "" : "none";
+            row.style.display = show
+                ? ""
+                : "none";
 
             if (show) {
                 visibleRows++;

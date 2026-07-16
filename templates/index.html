@@ -76,7 +76,12 @@ Monitoring Sub Kegiatan
 
                     {% for row in table %}
 
-                    <tr class="clickable-row">
+                    <tr class="clickable-row"
+                        data-href="{{ url_for(
+                            'dashboard.detail',
+                            kode=row.kode
+                        ) }}"
+                    >
 
                         <td>
                             {{ row.bidang }}
@@ -88,25 +93,11 @@ Monitoring Sub Kegiatan
 
                         <td>
 
-                            <div class="d-flex align-items-center gap-3">
+                            {% with status=row.status %}
 
-                                <div
-                                    class="progress flex-grow-1"
-                                    style="height: 8px;"
-                                >
+                                {% include "components/progress.html" %}
 
-                                    <div
-                                        class="progress-bar {{ row.status.color }}"
-                                        data-progress="{{ row.status.value }}"
-                                    ></div>
-
-                                </div>
-
-                                <span class="fw-semibold text-nowrap">
-                                    {{ row.status.display }}
-                                </span>
-
-                            </div>
+                            {% endwith %}
 
                         </td>
 
@@ -155,9 +146,9 @@ Monitoring Sub Kegiatan
 
 {% block scripts %}
 
-    <script src="{{ url_for(
-        'static',
-        filename='js/dashboard.js'
-    ) }}"></script>
+<script src="{{ url_for(
+    'static',
+    filename='js/dashboard.js'
+) }}"></script>
 
 {% endblock %}

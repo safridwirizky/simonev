@@ -1,19 +1,207 @@
 {% extends "base.html" %}
 
 {% block title %}
-Detail
+{{ detail.sub_kegiatan }}
 {% endblock %}
 
 {% block content %}
 
 <div class="container-fluid">
 
-    <h2 class="fw-bold">
-        Detail Sub Kegiatan
-    </h2>
+    <!-- Header -->
 
-    <p>{{ kode }}</p>
+    <div class="mb-4">
+
+        <a
+            href="{{ url_for('dashboard.index') }}"
+            class="btn btn-outline-secondary mb-4"
+        >
+            <i class="bi bi-arrow-left"></i>
+
+            Kembali
+
+        </a>
+
+        <h2 class="fw-bold mb-1">
+
+            {{ detail.header.sub_kegiatan }}
+
+        </h2>
+
+        <div class="text-muted">
+
+            {{ detail.header.bidang }}
+
+        </div>
+
+        <small class="text-secondary">
+
+            Kode :
+            {{ detail.header.kode }}
+
+        </small>
+
+    </div>
+
+    <!-- KPI -->
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-6">
+
+            <div class="card shadow-sm border-0">
+
+                {% with title="🎯 Target Kinerja",
+
+                        value=detail.kinerja.target,
+
+                        subtitle=detail.kinerja.satuan
+
+                %}
+
+                    {% include "components/kpi_card.html" %}
+
+                {% endwith %}
+
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="card shadow-sm border-0">
+
+                {% with title="✅ Realisasi Kinerja",
+
+                        value=detail.kinerja.target,
+
+                        subtitle=detail.kinerja.satuan
+
+                %}
+
+                    {% include "components/kpi_card.html" %}
+
+                {% endwith %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Progress Kinerja -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-white">
+
+            Progress Kinerja
+
+        </div>
+
+        <div class="card-body">
+
+            <p class="text-muted mb-0">
+
+                Belum diimplementasikan.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- Progress Anggaran -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-white">
+
+            Progress Penyerapan Anggaran
+
+        </div>
+
+        <div class="card-body">
+
+            {% with status=detail.anggaran.status %}
+
+                {% include "components/progress.html" %}
+
+            {% endwith %}
+
+        </div>
+
+    </div>
+
+    <!-- Timeline -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-white">
+
+            Timeline Triwulan
+
+        </div>
+
+        <div class="card-body">
+
+            <p class="text-muted mb-0">
+
+                Belum diimplementasikan.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- Faktor Penghambat -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-white">
+
+            Faktor Penghambat
+
+        </div>
+
+        <div class="card-body">
+
+            {{ detail.hambatan or
+            "Belum ada faktor penghambat." }}
+
+        </div>
+
+    </div>
+
+    <!-- Rekomendasi -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-white">
+
+            Rekomendasi
+
+        </div>
+
+        <div class="card-body">
+
+            {{ detail.rekomendasi or
+            "Belum ada rekomendasi." }}
+
+        </div>
+
+    </div>
 
 </div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script src="{{ url_for(
+    'static',
+    filename='js/detail.js'
+) }}"></script>
 
 {% endblock %}

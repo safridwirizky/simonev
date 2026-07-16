@@ -1,0 +1,19 @@
+{% macro section(title) %}
+
+<div class="card shadow-sm border-0 mb-4">
+
+    <div class="card-header bg-white fw-semibold">
+
+        {{ title }}
+
+    </div>
+
+    <div class="card-body">
+
+        {{ caller() }}
+
+    </div>
+
+</div>
+
+{% endmacro %}

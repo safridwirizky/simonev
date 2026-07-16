@@ -29,7 +29,12 @@ def index():
 @dashboard_bp.route("/sub-kegiatan/<kode>")
 def detail(kode):
 
+    dashboard = DashboardService(
+        excel_service,
+        settings_service
+    )
+
     return render_template(
         "detail.html",
-        kode=kode
+        detail=dashboard.detail(kode)
     )

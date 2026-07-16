@@ -138,27 +138,69 @@ class AnalyticsService:
 
     def get_detail(self, kode):
 
+        return {
+
+            "header": self.get_header(kode),
+
+            "kinerja": self.get_kinerja(kode),
+
+            "anggaran": self.get_anggaran(kode),
+
+            "timeline": self.get_timeline(kode),
+
+            "hambatan": self.get_hambatan(kode),
+
+            "rekomendasi": self.get_rekomendasi(kode)
+
+        }
+
+    def get_header(self, kode):
+
         row = self._row(
-
             self.realisasi,
-
             kode
-
         )
 
         if row is None:
-
             return None
 
-        return dict(
-            kode=row["kode"],
-            bidang=row["bidang"],
-            sub_kegiatan=row["sub_kegiatan"],
-            target_kinerja=row["target_kinerja"],
-            satuan=row["satuan"]
+        return {
+
+            "kode": str(row["kode"]),
+
+            "bidang": str(row["bidang"]),
+
+            "sub_kegiatan": str(row["sub_kegiatan"])
+
+        }
+
+    def get_kinerja(self, kode):
+
+        row = self._row(
+            self.realisasi,
+            kode
         )
 
-    def calculate_status(self, kode):
+        if row is None:
+            return None
+
+        return {
+
+            "target": int(
+                row["target_kinerja"]
+            ),
+
+            "realisasi": float(
+                row["realisasi_kinerja"]
+            ),
+
+            "satuan": str(
+                row["satuan"]
+            )
+
+        }
+
+    def get_anggaran(self, kode):
 
         realisasi = self._row(
             self.realisasi,
@@ -171,26 +213,33 @@ class AnalyticsService:
         )
 
         if realisasi is None or target is None:
-            return self._build_status(
-                value=0,
-                target=0,
-                realisasi=0
-            )
 
-        realisasi_columns = self._period_columns(
-            "realisasi"
-        )
+            return {
 
-        target_columns = self._period_columns(
-            "target"
-        )
+                "target": {
+                    "value": 0,
+                    "display": self._currency(0)
+                },
+
+                "realisasi": {
+                    "value": 0,
+                    "display": self._currency(0)
+                },
+
+                "status": self._build_status(
+                    value=0,
+                    target=0,
+                    realisasi=0
+                )
+
+            }
 
         total_realisasi = realisasi[
-            realisasi_columns
+            self._period_columns("realisasi")
         ].sum()
 
         total_target = target[
-            target_columns
+            self._period_columns("target")
         ].sum()
 
         persentase = self._safe_divide(
@@ -198,8 +247,88 @@ class AnalyticsService:
             total_target
         )
 
-        return self._build_status(
-            value=persentase,
-            target=total_target,
-            realisasi=total_realisasi
+        return {
+
+            "target": {
+
+                "value": total_target,
+
+                "display": self._currency(
+                    total_target
+                )
+
+            },
+
+            "realisasi": {
+
+                "value": total_realisasi,
+
+                "display": self._currency(
+                    total_realisasi
+                )
+
+            },
+
+            "status": self._build_status(
+
+                value=persentase,
+
+                target=total_target,
+
+                realisasi=total_realisasi
+
+            )
+
+        }
+    
+    def get_timeline(self, kode):
+
+        return {
+
+            "tw1": None,
+
+            "tw2": None,
+
+            "tw3": None,
+
+            "tw4": None
+
+        }
+    
+    def get_hambatan(self, kode):
+
+        row = self._row(
+            self.realisasi,
+            kode
         )
+
+        if row is None:
+            return ""
+
+        value = str(
+            row["FAKTOR PENGHAMBAT"]
+        ).strip()
+
+        if value in ("", "0", "nan", "None"):
+            return None
+
+        return value
+    
+    def get_rekomendasi(self, kode):
+
+        row = self._row(
+            self.realisasi,
+            kode
+        )
+
+        if row is None:
+            return ""
+
+        value = str(
+            row["REKOMENDASI"]
+        ).strip()
+
+        if value in ("", "0", "nan", "None"):
+            return None
+
+        return value
