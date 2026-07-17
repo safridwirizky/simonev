@@ -3,8 +3,9 @@ from flask_bootstrap import Bootstrap5
 
 from config import Config
 
-from routes.dashboard import dashboard_bp
 from routes.api import api_bp
+from routes.dashboard import dashboard_bp
+from routes.rekomendasi import bp as rekomendasi_bp
 
 from extensions import excel_service
 from extensions import settings_service
@@ -24,8 +25,9 @@ def create_app():
 
     excel_service.load(app.config["EXCEL_FILE"])
 
-    app.register_blueprint(dashboard_bp)
     app.register_blueprint(api_bp, url_prefix="/api")
+    app.register_blueprint(dashboard_bp)
+    app.register_blueprint(rekomendasi_bp)
 
     return app
 
