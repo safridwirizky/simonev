@@ -6,17 +6,17 @@
         <ul class="nav flex-column">
 
             <li class="nav-item">
-                <a class="nav-link active"
-                   href="/">
+                <a class="nav-link {% if endpoint == 'dashboard.index' %}active{% endif %}"
+                href="{{ url_for('dashboard.index') }}">
                     <i class="bi bi-speedometer2 me-2"></i>
                     Dashboard
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link"
-                   href="{{ url_for('rekomendasi.index') }}">
-                    <i class="bi bi-graph-up-arrow me-2"></i>
+                <a class="nav-link {% if endpoint.startswith('rekomendasi.') %}active{% endif %}"
+                href="{{ url_for('rekomendasi.index') }}">
+                    <i class="bi bi-clipboard-check me-2"></i>
                     Monitoring
                 </a>
             </li>
