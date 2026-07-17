@@ -113,25 +113,17 @@
 
     <!-- Progress Anggaran -->
 
-    <div class="card shadow-sm border-0 mb-4">
+    {% from "components/cards.html" import section %}
 
-        <div class="card-header bg-white">
+    {% call section("Penyerapan Anggaran") %}
 
-            Progress Penyerapan Anggaran
-
+        <div
+            id="anggaranChart"
+            data-chart='{{ detail.anggaran.chart|tojson }}'
+            style="min-height: 380px;">
         </div>
 
-        <div class="card-body">
-
-            {% with status=detail.anggaran.status %}
-
-                {% include "components/progress.html" %}
-
-            {% endwith %}
-
-        </div>
-
-    </div>
+    {% endcall %}
 
     <!-- Timeline -->
 
@@ -198,6 +190,23 @@
 {% endblock %}
 
 {% block scripts %}
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<script src="{{ url_for(
+    'static',
+    filename='js/charts.js'
+) }}"></script>
+
+<script src="{{ url_for(
+    'static',
+    filename='js/anggaran.js'
+) }}"></script>
+
+<script src="{{ url_for(
+    'static',
+    filename='js/kinerja.js'
+) }}"></script>
 
 <script src="{{ url_for(
     'static',

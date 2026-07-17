@@ -104,6 +104,53 @@ class AnalyticsService:
             "color": color,
             "icon": icon,
         }
+    
+    def _build_anggaran_chart(
+        self,
+        realisasi,
+        target
+    ):
+
+        periods = [
+            ("TW I", "target_tw1", "realisasi_tw1"),
+            ("TW II", "target_tw2", "realisasi_tw2"),
+            ("TW III", "target_tw3", "realisasi_tw3"),
+            ("TW IV", "target_tw4", "realisasi_tw4"),
+        ]
+
+        triwulan = []
+
+        for periode, target_col, realisasi_col in periods:
+
+            if realisasi is None or target is None:
+
+                target_value = 0
+                realisasi_value = 0
+
+            else:
+
+                target_value = float(target[target_col])
+                realisasi_value = float(realisasi[realisasi_col])
+
+            triwulan.append({
+
+                "periode": periode,
+
+                "target": {
+                    "value": target_value,
+                    "display": self._currency(target_value)
+                },
+
+                "realisasi": {
+                    "value": realisasi_value,
+                    "display": self._currency(realisasi_value)
+                }
+
+            })
+
+        return {
+            "triwulan": triwulan
+        }
 
     # ==============================================================================
     # PUBLIC
@@ -148,9 +195,7 @@ class AnalyticsService:
 
             "timeline": self.get_timeline(kode),
 
-            "hambatan": self.get_hambatan(kode),
-
-            "rekomendasi": self.get_rekomendasi(kode)
+            "evaluasi": self.get_evaluasi(kode)
 
         }
 
@@ -212,6 +257,11 @@ class AnalyticsService:
             kode
         )
 
+        chart = self._build_anggaran_chart(
+            realisasi,
+            target
+        )
+
         if realisasi is None or target is None:
 
             return {
@@ -230,7 +280,9 @@ class AnalyticsService:
                     value=0,
                     target=0,
                     realisasi=0
-                )
+                ),
+
+                "chart": chart
 
             }
 
@@ -277,7 +329,83 @@ class AnalyticsService:
 
                 realisasi=total_realisasi
 
-            )
+            ),
+
+            "chart": chart
+
+        }
+    
+    def get_anggaran_chart(self, kode):
+
+        realisasi = self._row(
+            self.realisasi,
+            kode
+        )
+
+        target = self._row(
+            self.anggaran,
+            kode
+        )
+
+        if realisasi is None or target is None:
+
+            return {
+
+                "categories": [
+                    "TW I",
+                    "TW II",
+                    "TW III",
+                    "TW IV"
+                ],
+
+                "target": [
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+
+                "realisasi": [
+                    0,
+                    0,
+                    0,
+                    0
+                ]
+
+            }
+
+        return {
+
+            "categories": [
+                "TW I",
+                "TW II",
+                "TW III",
+                "TW IV"
+            ],
+
+            "target": [
+
+                float(target["target_tw1"]),
+
+                float(target["target_tw2"]),
+
+                float(target["target_tw3"]),
+
+                float(target["target_tw4"])
+
+            ],
+
+            "realisasi": [
+
+                float(realisasi["realisasi_tw1"]),
+
+                float(realisasi["realisasi_tw2"]),
+
+                float(realisasi["realisasi_tw3"]),
+
+                float(realisasi["realisasi_tw4"])
+
+            ]
 
         }
     
@@ -295,7 +423,7 @@ class AnalyticsService:
 
         }
     
-    def get_hambatan(self, kode):
+    def get_evaluasi(self, kode):
 
         row = self._row(
             self.realisasi,
@@ -303,32 +431,41 @@ class AnalyticsService:
         )
 
         if row is None:
-            return ""
+            return None
 
-        value = str(
+        hambatan = str(
             row["FAKTOR PENGHAMBAT"]
         ).strip()
 
-        if value in ("", "0", "nan", "None"):
-            return None
-
-        return value
-    
-    def get_rekomendasi(self, kode):
-
-        row = self._row(
-            self.realisasi,
-            kode
-        )
-
-        if row is None:
-            return ""
-
-        value = str(
+        rekomendasi = str(
             row["REKOMENDASI"]
         ).strip()
 
-        if value in ("", "0", "nan", "None"):
+        if hambatan in ("", "0", "nan", "None"):
+            hambatan = None
+
+        if rekomendasi in ("", "0", "nan", "None"):
+            rekomendasi = None
+
+        # Belum ada evaluasi sama sekali
+        if hambatan is None and rekomendasi is None:
             return None
 
-        return value
+        return {
+
+            "hambatan": hambatan,
+
+            "rekomendasi": rekomendasi,
+
+            "tindak_lanjut": {
+
+                # nanti berasal dari Excel / Database
+                "status": None,
+
+                "tanggal": None,
+
+                "catatan": None
+
+            }
+
+        }
