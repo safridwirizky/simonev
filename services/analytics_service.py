@@ -51,6 +51,11 @@ class AnalyticsService:
         value = float(value)
 
         return f"Rp {value:,.0f}".replace(",", ".")
+    
+    @staticmethod
+    def _number(value):
+
+        return f"{value:,.0f}".replace(",", ".")
 
     @staticmethod
     def _safe_divide(numerator, denominator):
@@ -63,7 +68,7 @@ class AnalyticsService:
             2
         ))
     
-    def _build_status(
+    def _build_anggaran_status(
         self,
         value: float,
         target: float,
@@ -151,6 +156,78 @@ class AnalyticsService:
         return {
             "triwulan": triwulan
         }
+    
+    def _build_metric(
+        self,
+        value,
+        formatter=None
+    ):
+        """
+        Build metric payload.
+
+        Returns:
+            {
+                "value": 100,
+                "display": "100"
+            }
+        """
+
+        return {
+            "value": value,
+            "display": (
+                formatter(value)
+                if formatter
+                else str(value)
+            )
+        }
+    
+    def _build_kinerja(
+        self,
+        target,
+        realisasi,
+        satuan
+    ):
+
+        persentase = self._safe_divide(
+            realisasi,
+            target
+        )
+
+        return {
+
+            "target": self._build_metric(
+                target,
+                self._number
+            ),
+
+            "realisasi": self._build_metric(
+                realisasi,
+                self._number
+            ),
+
+            "persentase": persentase,
+
+            "satuan": satuan
+
+        }
+    
+    def _clean_text(self, value):
+
+        if value is None:
+            return None
+
+        value = str(value).strip().lower()
+
+        if value in {
+            "",
+            "0",
+            "0.0",
+            "nan",
+            "none"
+        }:
+            return None
+
+        return value
 
     # ==============================================================================
     # PUBLIC
@@ -189,11 +266,9 @@ class AnalyticsService:
 
             "header": self.get_header(kode),
 
-            "kinerja": self.get_kinerja(kode),
-
             "anggaran": self.get_anggaran(kode),
 
-            "timeline": self.get_timeline(kode),
+            "kinerja": self.get_kinerja(kode),
 
             "evaluasi": self.get_evaluasi(kode)
 
@@ -229,21 +304,21 @@ class AnalyticsService:
         if row is None:
             return None
 
-        return {
+        return self._build_kinerja(
 
-            "target": int(
+            target=float(
                 row["target_kinerja"]
             ),
 
-            "realisasi": float(
+            realisasi=float(
                 row["realisasi_kinerja"]
             ),
 
-            "satuan": str(
+            satuan=str(
                 row["satuan"]
             )
 
-        }
+        )
 
     def get_anggaran(self, kode):
 
@@ -276,7 +351,7 @@ class AnalyticsService:
                     "display": self._currency(0)
                 },
 
-                "status": self._build_status(
+                "status": self._build_anggaran_status(
                     value=0,
                     target=0,
                     realisasi=0
@@ -321,7 +396,7 @@ class AnalyticsService:
 
             },
 
-            "status": self._build_status(
+            "status": self._build_anggaran_status(
 
                 value=persentase,
 
@@ -409,20 +484,6 @@ class AnalyticsService:
 
         }
     
-    def get_timeline(self, kode):
-
-        return {
-
-            "tw1": None,
-
-            "tw2": None,
-
-            "tw3": None,
-
-            "tw4": None
-
-        }
-    
     def get_evaluasi(self, kode):
 
         row = self._row(
@@ -433,21 +494,14 @@ class AnalyticsService:
         if row is None:
             return None
 
-        hambatan = str(
+        hambatan = self._clean_text(
             row["FAKTOR PENGHAMBAT"]
-        ).strip()
+        )
 
-        rekomendasi = str(
+        rekomendasi = self._clean_text(
             row["REKOMENDASI"]
-        ).strip()
+        )
 
-        if hambatan in ("", "0", "nan", "None"):
-            hambatan = None
-
-        if rekomendasi in ("", "0", "nan", "None"):
-            rekomendasi = None
-
-        # Belum ada evaluasi sama sekali
         if hambatan is None and rekomendasi is None:
             return None
 
@@ -455,17 +509,6 @@ class AnalyticsService:
 
             "hambatan": hambatan,
 
-            "rekomendasi": rekomendasi,
-
-            "tindak_lanjut": {
-
-                # nanti berasal dari Excel / Database
-                "status": None,
-
-                "tanggal": None,
-
-                "catatan": None
-
-            }
+            "rekomendasi": rekomendasi
 
         }

@@ -43,74 +43,6 @@
 
     </div>
 
-    <!-- KPI -->
-
-    <div class="row g-3 mb-4">
-
-        <div class="col-md-6">
-
-            <div class="card shadow-sm border-0">
-
-                {% with title="🎯 Target Kinerja",
-
-                        value=detail.kinerja.target,
-
-                        subtitle=detail.kinerja.satuan
-
-                %}
-
-                    {% include "components/kpi_card.html" %}
-
-                {% endwith %}
-
-            </div>
-
-        </div>
-
-        <div class="col-md-6">
-
-            <div class="card shadow-sm border-0">
-
-                {% with title="✅ Realisasi Kinerja",
-
-                        value=detail.kinerja.target,
-
-                        subtitle=detail.kinerja.satuan
-
-                %}
-
-                    {% include "components/kpi_card.html" %}
-
-                {% endwith %}
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Progress Kinerja -->
-
-    <div class="card shadow-sm border-0 mb-4">
-
-        <div class="card-header bg-white">
-
-            Progress Kinerja
-
-        </div>
-
-        <div class="card-body">
-
-            <p class="text-muted mb-0">
-
-                Belum diimplementasikan.
-
-            </p>
-
-        </div>
-
-    </div>
-
     <!-- Progress Anggaran -->
 
     {% from "components/cards.html" import section %}
@@ -125,65 +57,103 @@
 
     {% endcall %}
 
-    <!-- Timeline -->
+    <!-- Progress Kinerja -->
 
-    <div class="card shadow-sm border-0 mb-4">
+    {% from "components/cards.html" import section %}
 
-        <div class="card-header bg-white">
+    {% call section("Capaian Kinerja") %}
 
-            Timeline Triwulan
+    <div
+        id="kinerjaGauge"
+        class="mb-4"
+        data-chart='{{ detail.kinerja|tojson }}'>
+    </div>
+
+    <hr class="my-4">
+
+    <div class="px-3 pb-2">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <div class="text-muted">
+                🎯 Target
+            </div>
+
+            <div class="fw-semibold fs-5">
+                {{ detail.kinerja.target.display }}
+                {{ detail.kinerja.satuan }}
+            </div>
 
         </div>
 
-        <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
 
-            <p class="text-muted mb-0">
+            <div class="text-muted">
+                ✅ Realisasi
+            </div>
 
-                Belum diimplementasikan.
-
-            </p>
+            <div class="fw-semibold fs-5">
+                {{ detail.kinerja.realisasi.display }}
+                {{ detail.kinerja.satuan }}
+            </div>
 
         </div>
 
     </div>
 
-    <!-- Faktor Penghambat -->
+    {% endcall %}
 
-    <div class="card shadow-sm border-0 mb-4">
+    <!-- Evaluasi -->
 
-        <div class="card-header bg-white">
+    {% if detail.evaluasi %}
 
-            Faktor Penghambat
+    {% call section("Evaluasi") %}
 
-        </div>
+    <div class="px-3 py-2">
 
-        <div class="card-body">
+        {% if detail.evaluasi.hambatan %}
 
-            {{ detail.hambatan or
-            "Belum ada faktor penghambat." }}
+        <h6 class="fw-semibold mb-2">
 
-        </div>
+            🚧 Hambatan
+
+        </h6>
+
+        <p class="mb-0">
+
+            {{ detail.evaluasi.hambatan }}
+
+        </p>
+
+        {% endif %}
+
+        {% if detail.evaluasi.hambatan and detail.evaluasi.rekomendasi %}
+
+        <hr class="my-4">
+
+        {% endif %}
+
+        {% if detail.evaluasi.rekomendasi %}
+
+        <h6 class="fw-semibold mb-2">
+
+            💡 Rekomendasi
+
+        </h6>
+
+        <p class="mb-0">
+
+            {{ detail.evaluasi.rekomendasi }}
+
+        </p>
+
+        {% endif %}
 
     </div>
 
-    <!-- Rekomendasi -->
+    {% endcall %}
 
-    <div class="card shadow-sm border-0 mb-4">
-
-        <div class="card-header bg-white">
-
-            Rekomendasi
-
-        </div>
-
-        <div class="card-body">
-
-            {{ detail.rekomendasi or
-            "Belum ada rekomendasi." }}
-
-        </div>
-
-    </div>
+    {% endif %}
 
 </div>
 
