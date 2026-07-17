@@ -110,3 +110,15 @@ footer {
     transition:width .6s ease;
 
 }
+
+.table-hover tbody tr {
+    transition: background-color .15s ease,
+                box-shadow .15s ease,
+                transform .15s ease;
+    cursor: pointer;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: translateX(2px);
+}
