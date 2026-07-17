@@ -1,3 +1,7 @@
+from datetime import date, datetime
+import pandas as pd
+
+
 class AnalyticsService:
 
     TRIWULAN_MAP = {
@@ -216,9 +220,9 @@ class AnalyticsService:
         if value is None:
             return None
 
-        value = str(value).strip().lower()
+        value = str(value).strip()
 
-        if value in {
+        if value.lower() in {
             "",
             "0",
             "0.0",
@@ -228,6 +232,32 @@ class AnalyticsService:
             return None
 
         return value
+    
+    def _clean_date(self, value):
+        if value is None:
+            return None
+
+        if pd.isna(value):
+            return None
+
+        if isinstance(value, (datetime, date)):
+            return value.strftime("%d %B %Y")
+
+        value = str(value).strip()
+
+        if value.lower() in {
+            "",
+            "0",
+            "0.0",
+            "nan",
+            "none"
+        }:
+            return None
+
+        try:
+            return pd.to_datetime(value).strftime("%d %B %Y")
+        except Exception:
+            return value
 
     # ==============================================================================
     # PUBLIC
@@ -270,7 +300,9 @@ class AnalyticsService:
 
             "kinerja": self.get_kinerja(kode),
 
-            "evaluasi": self.get_evaluasi(kode)
+            "evaluasi": self.get_evaluasi(kode),
+
+            "tindak_lanjut": self.get_tindak_lanjut(kode)
 
         }
 
@@ -293,32 +325,6 @@ class AnalyticsService:
             "sub_kegiatan": str(row["sub_kegiatan"])
 
         }
-
-    def get_kinerja(self, kode):
-
-        row = self._row(
-            self.realisasi,
-            kode
-        )
-
-        if row is None:
-            return None
-
-        return self._build_kinerja(
-
-            target=float(
-                row["target_kinerja"]
-            ),
-
-            realisasi=float(
-                row["realisasi_kinerja"]
-            ),
-
-            satuan=str(
-                row["satuan"]
-            )
-
-        )
 
     def get_anggaran(self, kode):
 
@@ -409,6 +415,32 @@ class AnalyticsService:
             "chart": chart
 
         }
+
+    def get_kinerja(self, kode):
+
+        row = self._row(
+            self.realisasi,
+            kode
+        )
+
+        if row is None:
+            return None
+
+        return self._build_kinerja(
+
+            target=float(
+                row["target_kinerja"]
+            ),
+
+            realisasi=float(
+                row["realisasi_kinerja"]
+            ),
+
+            satuan=str(
+                row["satuan"]
+            )
+
+        )
     
     def get_anggaran_chart(self, kode):
 
@@ -510,5 +542,52 @@ class AnalyticsService:
             "hambatan": hambatan,
 
             "rekomendasi": rekomendasi
+
+        }
+    
+    def get_tindak_lanjut(self, kode):
+
+        row = self._row(
+            self.realisasi,
+            kode
+        )
+
+        if row is None:
+            return None
+
+        status = self._clean_text(
+            row["STATUS TINDAK LANJUT"]
+        )
+
+        tanggal = self._clean_date(
+            row["Tanggal Tindak Lanjut"]
+        )
+
+        catatan = self._clean_text(
+            row["Catatan Tindak Lanjut"]
+        )
+
+        if status is None and tanggal is None and catatan is None:
+            return None
+
+        badge = {
+
+            "Belum Ditindaklanjuti": "bg-secondary",
+
+            "Diproses": "bg-warning text-dark",
+
+            "Selesai": "bg-success"
+
+        }.get(status, "bg-secondary")
+
+        return {
+
+            "status": status,
+
+            "badge": badge,
+
+            "tanggal": tanggal,
+
+            "catatan": catatan
 
         }

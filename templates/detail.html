@@ -155,6 +155,70 @@
 
     {% endif %}
 
+    <!-- Tindak Lanjut -->
+
+    {% if detail.tindak_lanjut %}
+
+    {% call section("Tindak Lanjut") %}
+
+    <div class="px-3 py-2">
+
+        <div class="row mb-2">
+
+            <div class="col-md-3 text-muted">
+                Status
+            </div>
+
+            <div class="col-md-9">
+
+                <span class="badge {{ detail.tindak_lanjut.badge }}">
+                    {{ detail.tindak_lanjut.status }}
+                </span>
+
+            </div>
+
+        </div>
+
+        {% if detail.tindak_lanjut.tanggal %}
+
+        <div class="row mb-3">
+
+            <div class="col-md-3 text-muted">
+                Tanggal
+            </div>
+
+            <div class="col-md-9">
+                {{ detail.tindak_lanjut.tanggal or "-" }}
+            </div>
+
+        </div>
+
+        {% endif %}
+
+        {% if detail.tindak_lanjut.catatan %}
+        
+        <hr>
+
+        <div>
+
+            <h6 class="fw-semibold mb-2">
+                📝 Catatan
+            </h6>
+
+            <p class="mb-0">
+                {{ detail.tindak_lanjut.catatan }}
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    {% endcall %}
+
+    {% endif %}
+
 </div>
 
 {% endblock %}
