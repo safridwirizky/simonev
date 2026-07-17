@@ -16,6 +16,10 @@ class DashboardService:
             self.excel.anggaran,
             self.settings
         )
+    
+    def summary(self):
+
+        return self.analytics.get_summary()
 
     def detail(self, kode):
 

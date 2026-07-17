@@ -21,6 +21,7 @@ def index():
 
     return render_template(
         "index.html",
+        summary=dashboard.summary(),
         table=dashboard.table(),
         total=excel_service.total_sub_kegiatan
     )

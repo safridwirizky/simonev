@@ -29,6 +29,125 @@ Monitoring Sub Kegiatan
 
     </div>
 
+    <!-- Summary -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="text-muted small mb-2">
+
+                        <i class="bi bi-folder2-open me-1"></i>
+
+                        Total Sub Kegiatan
+
+                    </div>
+
+                    <h3 class="fw-bold mb-0">
+
+                        {{ "{:,}".format(summary.total_sub_kegiatan).replace(",", ".") }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="text-muted small mb-2">
+
+                        <i class="bi bi-cash-stack me-1"></i>
+
+                        Total Anggaran
+
+                    </div>
+
+                    <h3 class="fw-bold mb-0">
+
+                        Rp {{ "{:,.0f}".format(summary.total_anggaran).replace(",", ".") }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="text-muted small mb-2">
+
+                        <i class="bi bi-graph-up-arrow me-1"></i>
+
+                        Total Realisasi
+
+                    </div>
+
+                    <h3 class="fw-bold mb-0">
+
+                        Rp {{ "{:,.0f}".format(summary.total_realisasi).replace(",", ".") }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="text-muted small mb-2">
+
+                        <i class="bi bi-bullseye me-1"></i>
+
+                        Capaian
+
+                    </div>
+
+                    {% set p = summary.persentase_realisasi %}
+
+                    <h3 class="fw-bold mb-0
+                        {% if p >= 80 %}
+                            text-success
+                        {% elif p >= 60 %}
+                            text-warning
+                        {% else %}
+                            text-danger
+                        {% endif %}
+                    ">
+
+                        {{ "%.2f"|format(p) }}%
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
     <!-- Search -->
     <div class="card shadow-sm border-0 mb-4">
 

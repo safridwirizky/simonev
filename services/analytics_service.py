@@ -263,6 +263,42 @@ class AnalyticsService:
     # PUBLIC
     # ==============================================================================
     
+    def get_summary(self):
+
+        total_sub_kegiatan = len(self.realisasi)
+
+        total_anggaran = self.anggaran[
+            "PAGU"
+        ].fillna(0).sum()
+
+        total_realisasi = self.realisasi[
+            "REALISASI"
+        ].fillna(0).sum()
+
+        persentase = 0
+
+        if total_anggaran > 0:
+
+            persentase = (
+                total_realisasi /
+                total_anggaran
+            ) * 100
+
+        return {
+
+            "total_sub_kegiatan": total_sub_kegiatan,
+
+            "total_anggaran": total_anggaran,
+
+            "total_realisasi": total_realisasi,
+
+            "persentase_realisasi": round(
+                persentase,
+                2
+            )
+
+        }
+    
     def get_sub_kegiatan(self):
 
         return (
