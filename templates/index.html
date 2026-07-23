@@ -23,9 +23,37 @@ Monitoring Sub Kegiatan
 
         </div>
 
-        <span class="badge bg-primary fs-6">
-            {{ total }} Sub Kegiatan
-        </span>
+        <div class="dropdown">
+
+            <button
+                class="btn btn-primary dropdown-toggle"
+                type="button"
+                id="triwulanDropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+
+                Triwulan {{ ["I","II","III","IV"][settings.triwulan - 1] }}
+
+            </button>
+
+            <ul class="dropdown-menu shadow">
+
+                {% for i in range(1, 5) %}
+                <li>
+                    <button
+                        class="dropdown-item {% if settings.triwulan == i %}active{% endif %}"
+                        type="button"
+                        data-triwulan="{{ i }}">
+
+                        Triwulan {{ ["I","II","III","IV"][i - 1] }}
+
+                    </button>
+                </li>
+                {% endfor %}
+
+            </ul>
+
+        </div>
 
     </div>
 

@@ -40,3 +40,7 @@ class SettingsService:
         self._settings["tahun"] = tahun
         self._settings["triwulan"] = triwulan
         self.save()
+
+    def set_triwulan(self, triwulan):
+        self._settings["triwulan"] = int(triwulan)
+        self.save()

@@ -1,6 +1,4 @@
-from flask import Blueprint
-from flask import jsonify
-from flask import request
+from flask import Blueprint, jsonify, request
 
 from extensions import settings_service
 
@@ -40,3 +38,15 @@ def update_settings():
         "success": True
 
     })
+
+
+@api_bp.post("/settings/triwulan")
+def update_triwulan():
+
+    data = request.get_json()
+
+    triwulan = int(data["triwulan"])
+
+    settings_service.set_triwulan(triwulan)
+
+    return "", 204

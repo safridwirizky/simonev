@@ -72,3 +72,35 @@ function enableSearch() {
     });
 
 }
+
+document
+    .querySelectorAll("[data-triwulan]")
+    .forEach(item => {
+
+        item.addEventListener("click", async () => {
+
+            const triwulan = item.dataset.triwulan;
+
+            const response = await fetch(
+                "/api/settings/triwulan",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        triwulan: triwulan
+                    })
+                }
+            );
+
+            if (!response.ok) {
+                alert("Gagal mengubah triwulan.");
+                return;
+            }
+
+            location.reload();
+
+        });
+
+    });
