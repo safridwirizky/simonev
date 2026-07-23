@@ -30,7 +30,7 @@ class AnalyticsService:
     def _row(self, df, kode):
 
         row = df.loc[
-            df["kode"] == kode
+            df["kode"] == str(kode)
         ]
 
         if row.empty:

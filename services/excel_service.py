@@ -136,6 +136,14 @@ class ExcelService:
 
         df[numeric_columns] = df[numeric_columns].fillna(0)
 
+        # Normalisasi kolom kode
+        if "kode" in df.columns:
+            df["kode"] = (
+                df["kode"]
+                .astype(str)
+                .str.strip()
+            )
+
         return df
     
     @property
